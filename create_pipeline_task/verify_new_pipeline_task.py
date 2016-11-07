@@ -1,3 +1,9 @@
+import os
+import sys
+
+if os.path.expandvars("$SCIPIPE_HEURISTICS") not in sys.path:
+    sys.path.insert(0, os.path.expandvars("$SCIPIPE_HEURISTICS"))
+
 import pipeline
 
 with open(os.environ["SCIPIPE_HEURISTICS"] + "/pipeline/h/cli/h.py") as fd:
