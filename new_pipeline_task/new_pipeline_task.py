@@ -31,15 +31,14 @@ class NewTask():
 
         parser = argparse.ArgumentParser()
         parser.add_argument('--package', help="Pipeline package.  One of 'h', 'hif', 'hifa', 'hifa', 'hifv', or 'hsd'.",
-                            type=str, choices=['h', 'hif', 'hifa', 'hifa', 'hifv', 'hsd'], required=True,
-                            default='hif')
-        parser.add_argument('--task', help='New task name', type=str, required=True, default='foobar')
+                            type=str, choices=['h', 'hif', 'hifa', 'hifa', 'hifv', 'hsd'], required=True)
+        parser.add_argument('--task', help='New task name', type=str, required=True)
 
         try:
             args = parser.parse_args(script_args)
         except:
             print('Problem with new_pipeline_task arguments.')
-            return '',''
+            return '', ''
 
         area = args.package
         task_name = args.task
@@ -106,11 +105,11 @@ class NewTask():
 
         print('\tCreating {f}'.format(f=cli_file))
         with open(cli_file, 'w+') as fd:
-            fd.writelines(cli_template.render(taskname=task_name))
+            fd.writelines(cli_template.render(package=area, taskname=task_name))
 
         print('\tCreating {f}'.format(f=cli_xml))
         with open(cli_xml, 'w+') as fd:
-            fd.writelines(cli_xml_template.render(taskname=task_name, package=area))
+            fd.writelines(cli_xml_template.render(package=area, taskname=task_name))
 
         # print('\tCreating {f}'.format(f=weblog_mako))
         # with open(weblog_mako, 'w+') as fd:
@@ -129,23 +128,28 @@ class NewTask():
         # Add import to package __init__.py
         # -----------------------------------------------------------------------------
 
-        package_init_file = "{repo}/pipeline/{area}/tasks/__init__.py".format(repo=self.repository_path,
-                                                                               area=area)
+        package_init_file = "{repo}/pipeline/{area}/tasks/__init__.py".format(repo=self.repository_path, area=area)
 
         with open(package_init_file) as fd:
             init_file_data = fd.readlines()
 
+        last_import_line = 0
+        task_already_in_init = False
+
         # look for the last "from " import line and
         # add the new module import on the next line
-        for idx, line in enumerate(init_file_data[::-1]):
-            if line.startswith('from '):
-                if task_name not in line:
-                    init_file_data.insert(-idx, 'from .{task} import {task_class}\n'.format(task=task_name,
-                                                                                            task_class=task_name.capitalize()))
-                    print('\tAdding "from .{task} import {task_class}" to {pfile}'.format(task=task_name,
-                                                                                        task_class=task_name.capitalize(),
-                                                                                        pfile=package_init_file))
-                break
+        for idx, line in enumerate(init_file_data):
+            if task_name in line:
+                task_already_in_init = True
+            elif line.startswith('from '):
+                last_import_line = idx
+
+        if task_already_in_init is False:
+            init_file_data.insert(last_import_line+1, 'from .{task} import {task_class}\n'.format(task=task_name,
+                                                                                                  task_class=task_name.capitalize()))
+        print('\tAdded "from .{task} import {task_class}" to {pfile}'.format(task=task_name,
+                                                                             task_class=task_name.capitalize(),
+                                                                             pfile=package_init_file))
 
         temp_init_file = tempfile.NamedTemporaryFile(delete=False)
         with open(temp_init_file.name, "w+") as fd:
@@ -252,31 +256,12 @@ class NewTask():
 
         print('\n\tNow use runsetup to make the new pipeline task visible within CASA.\n')
 
-    def verify(self, area, task_name):
-
-        vis = '/lustre/naasc/users/jmasters/pipeline_test_data/VLAT003/rawdata/13A-537.sb24066356.eb24324502.56514.05971091435'
-
-        h_init()
-        h_save()
-        hifv_importdata(vis=[vis], session=['session_1'], overwrite=False)
-        h_save()
-
-        context = pipeline.Pipeline(context='last').context
-
-        print('checking pipeline.{area}.tasks.{task}.Foobar(inputs).execute()'.format(area=area, task=task_name))
-        exec('inputs = pipeline.{area}.tasks.{task}.Foobar.Inputs(context)'.format(area=area, task=task_name))
-        task = pipeline.hif.tasks.foobar.Foobar(inputs)
-        result = task.execute(dry_run=False)
-        result.accept(context)
-        context.save()
-
-        print('checking hif_foobar()')
-        hif_foobar()
-        h_save()
-
 
 if __name__ == '__main__':
 
     new_task = NewTask()
     area, task_name = new_task.parse_command_line(sys.argv)
-    new_task.create(area, task_name)
+    if not area or not task_name:
+        print('Both area and task_name need to be defined')
+    else:
+        new_task.create(area, task_name)

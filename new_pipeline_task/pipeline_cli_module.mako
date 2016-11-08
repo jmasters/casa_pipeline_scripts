@@ -5,7 +5,7 @@ from taskinit import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hif_${taskname.lower()}(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def ${package}_${taskname.lower()}(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
     # create a dictionary containing all the arguments given in the
     # constructor
     all_inputs = vars()
