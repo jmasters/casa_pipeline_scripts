@@ -20,3 +20,5 @@ export PATH=$CASAPATH:$CASAPATH/bin:$PATH
 TOPDIR=/lustre/naasc/users/jmasters
 export SCIPIPE_HEURISTICS=$TOPDIR/casapipeline
 export SCIPIPE_ROOTDIR=$TOPDIR/pipeline_test_data
+
+showenv
