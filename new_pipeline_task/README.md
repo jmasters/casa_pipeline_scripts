@@ -1,33 +1,21 @@
 # Create a pipeline task
 
-The purpose of this script is to make it easy to create
-a generic pipeline task, save time and not miss any
-essential steps.
+The purpose of this module is to bootstrap the creation of a task, thus 
+saving time and making it easier to not miss essential steps.
 
-* To create the task, simply execute create_pipeline_task.py either from the
-command line with casa, or within a casa session.
-
-    Command line:
-    ```
-    casa --nogui --nologger -c $SCIPIPE_HEURISTICS/pipeline/infrastructure/create_pipeline_task/create_pipeline_task.py
-    ```
-    
-    Within a casa session:
-    ```python
-    with open(os.environ["SCIPIPE_HEURISTICS"] + "/pipeline/infrastructure/create_pipeline_task/create_pipeline_task.py") as fd:
-        exec(fd.read())
-    ```
-
-* To see if the task was added correctly, you can check manually or
-run verify_new_pipeline_task.py like the previous task creation script.
+* To create a task, simply execute new_pipeline_task.py from the command
+ line or use the new_pipeline_task module within a CASA session.  For 
+ example, if I want to create task "foo" in the package "hif", I could 
+ do one of the following.
 
     Command line:
     ```
-    casa --nogui --nologger -c $SCIPIPE_HEURISTICS/pipeline/infrastructure/create_pipeline_task/verify_new_pipeline_task.py
+    casa --nogui --nologger -c $SCIPIPE_HEURISTICS/pipeline/infrastructure/new_pipeline_task/new_pipeline_task.py --package hif --task foo
     ```
     
-    Within a casa session:
+    Within CASA:
     ```python
-    with open(os.environ["SCIPIPE_HEURISTICS"] + "/pipeline/infrastructure/create_pipeline_task/verify_new_pipeline_task.py") as fd:
-        exec(fd.read())
+     from pipeline.infrastructure.new_pipeline_task import new_pipeline_task
+       newtask = new_pipeline_task.NewTask()
+       newtask.create('hif', 'foo')
     ```
