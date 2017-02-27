@@ -7,10 +7,12 @@
 # Set the version of casa that 'runsetup.sh' will use to
 #  build pipeline tasks
 
-#CASAVERSION=casa-test-5.0.49
+#CASAVERSION=current
+CASAVERSION=casa-prerelease-5.0.0-135
 
-CASAVERSION=current
-export CASAPATH=/home/casa/packages/RHEL6/test/$CASAVERSION/
+#export CASAPATH=/home/casa/packages/RHEL6/test/$CASAVERSION/
+export CASAPATH=/home/casa/packages/RHEL6/prerelease/$CASAVERSION/
+
 export PATH=$CASAPATH:$CASAPATH/bin:$PATH
 
 # set locations of

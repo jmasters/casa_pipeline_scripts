@@ -1,6 +1,8 @@
 import os
+import glob
 
-casapath = '/users/jmasters/lustre/casa-unittests'
+casapath = glob.glob('/lustre/naasc/users/jmasters/unittests/casa-latest/casa-*')[0]
+
 os.environ['SCIPIPE_ROOTDIR'] = '/lustre/naasc/users/jmasters/pipeline_test_data'
 os.environ['SCIPIPE_HEURISTICS'] = '/lustre/naasc/users/jmasters/casapipeline'
 
@@ -8,7 +10,6 @@ os.environ['CASAPATH'] = casapath
 os.environ['PATH'] = '{casapath}:{casapath}/bin:{path}'.format(casapath=casapath, path=os.environ['PATH'])
 
 print('CASAPATH = {cp}'.format(cp=casapath))
-
 
 def run_all_tests():
     os.system('time $CASAPATH/bin/casa --nogui --nologger -c '
