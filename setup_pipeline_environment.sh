@@ -8,7 +8,7 @@
 #  build pipeline tasks
 
 CASAVERSION=current
-#CASAVERSION=casa-prerelease-5.0.0-135
+#CASAVERSION=casa-prerelease-5.0.0-150
 
 #export CASAPATH=/home/casa/packages/RHEL6/test/$CASAVERSION/
 export CASAPATH=/home/casa/packages/RHEL6/prerelease/$CASAVERSION/
@@ -21,6 +21,7 @@ export PATH=$CASAPATH:$CASAPATH/bin:$PATH
 
 TOPDIR=/lustre/naasc/users/jmasters
 export SCIPIPE_HEURISTICS=$TOPDIR/casapipeline
+#export SCIPIPE_HEURISTICS=$TOPDIR/image_refactor_pipeline
 export SCIPIPE_ROOTDIR=$TOPDIR/pipeline_test_data
 
 showenv
