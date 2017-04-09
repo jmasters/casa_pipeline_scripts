@@ -146,20 +146,18 @@ class Editimlist(basetask.StandardTaskTemplate):
                 cellsize_arcsec = float(target['cell'].strip('arcsec'))
                 dist = ((target['imsize'][0] / 2.) * cellsize_arcsec) + buffer_arcsec
                 dist_arcsec = str(dist) + 'arcsec'
-                import pdb; pdb.set_trace()
                 found_fields = target['heuristics'].find_fields(distance=dist_arcsec, phase_center=target['phasecenter'])
-                target['field'] = found_fields
-                # fieldnames = []
-                # if type(found_fields) is not type(None):
-                #     for fid in found_fields:
-                #         fieldobj = ms.get_fields(field_id=fid)
-                #         fieldnames.append(fieldobj[0].name)
+                fieldnames = []
+                if type(found_fields) is not type(None):
+                    for fid in found_fields:
+                        fieldobj = ms.get_fields(field_id=fid)
+                        fieldnames.append(fieldobj[0].name)
 
-                #     if len(fieldnames) > 1:
-                #         fieldnames = [','.join(fieldnames)]
+                    if len(fieldnames) > 1:
+                        fieldnames = [','.join(fieldnames)]
 
-                #     print('fieldnames', fieldnames)
-                #     target['field'] = fieldnames
+                    # print('fieldnames', fieldnames)
+                    target['field'] = fieldnames[0]
 
         # elif inputs.editmode == 'edit':
         #     for parameter in inputs.keys_to_change:
